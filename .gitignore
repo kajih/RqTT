@@ -109,3 +109,5 @@ http-client.private.env.json
 
 /.idea
 Cargo.lock
+
+.env

@@ -16,7 +16,6 @@ async fn main() {
 
     task::spawn(async move {
         for i in 0..10 {
-
             client
                 .publish("hello/rumqtt", QoS::AtLeastOnce, false, vec![i; i as usize])
                 .await
