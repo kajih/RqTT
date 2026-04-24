@@ -1,0 +1,8 @@
+[package]
+name = "RqTT"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rumqttc-next = { version = "0.29.0", features = ["url"] }
+tokio = { version = "1.51.0", features = ["macros", "rt-multi-thread", "net", "time"] }
