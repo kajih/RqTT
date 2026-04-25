@@ -1,0 +1,3 @@
+mq_host = "bastard.lan"
+mq_port = 1883
+mq_topic = "test/rqtt"

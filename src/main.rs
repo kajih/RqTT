@@ -1,16 +1,29 @@
 use rumqttc::{AsyncClient, MqttOptions, QoS};
 use std::time::Duration;
 use tokio::{task, time};
+mod settings;
 
 #[tokio::main(flavor = "current_thread")]
-async fn main() {
-    let mut mqttoptions = MqttOptions::new("rumqtt-async", "test.mosquitto.org");
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Environment
+    dotenvy::dotenv().ok();
+    let username = std::env::var("MQTT_USERNAME")?;
+    let passwd = std::env::var("MQTT_PASSWORD")?;
+    println!("MQTT_USERNAME: {}", &username);
+    println!("MQTT_PASSWORD: {}", &passwd);
+
+    // Settings
+    let settings = settings::load();
+    println!("{:?}", settings);
+
+    let mut mqttoptions = MqttOptions::new("RqTT", settings.mq_host);
     mqttoptions.set_keep_alive(5);
+    mqttoptions.set_credentials(&username, passwd.into_bytes());
 
     let (mut client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
 
     client
-        .subscribe("hello/rumqtt", QoS::AtMostOnce)
+        .subscribe(settings.mq_topic, QoS::AtMostOnce)
         .await
         .unwrap();
 
@@ -28,4 +41,6 @@ async fn main() {
     while let Ok(notification) = eventloop.poll().await {
         println!("Received = {:?}", notification);
     }
+
+    Ok(())
 }
